@@ -51,6 +51,7 @@ public class Tile : MonoBehaviour
         if (_chessPieces == null || _chessPieces.GetPieceColor() != color)
         {
             _highLightRenderer.SetActive(true);
+            UnitManager.Instance.Selected.Add(GridManager.boardTiles[new Vector2(_X, _Y)]);
         }
     }
 
