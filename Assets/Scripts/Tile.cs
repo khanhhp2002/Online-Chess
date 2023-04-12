@@ -59,6 +59,19 @@ public class Tile : MonoBehaviour
     {
         return this._chessPieces;
     }
+    public int IsWall(Team Color)
+    {
+        if (this._chessPieces != null)
+        {
+            Debug.Log($"Found Pieces In {_X},{_Y}");
+            if (this._chessPieces.GetPieceColor() != Color)
+                return 1; // this piece is enemy
+            else
+                return 2; // this piece is our team
+        }
+        else
+            return 0; // this tile is empty
+    }
 
     public void Reset()
     {
@@ -91,6 +104,10 @@ public class Tile : MonoBehaviour
         {
             if (UnitManager.Instance.Selected.Contains(this))
             {
+                if (this._chessPieces != null)
+                {
+                    Destroy(this._chessPieces.gameObject);
+                }
                 this._chessPieces = UnitManager.Instance.selectedTile.GetChessPieces();
                 this._chessPieces.isMove = true;
                 UnitManager.Instance.selectedTile.Reset();

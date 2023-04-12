@@ -12,6 +12,7 @@ public class UnitManager : Singleton<UnitManager>
     {
         if (type == ChessPieces.Pawn)
         {
+            int status;
             if (GridManager.boardTiles.ContainsKey(new Vector2(position.x, position.y + 1)))
             {
                 GridManager.boardTiles[new Vector2(position.x, position.y + 1)].HighLight(color);
@@ -101,162 +102,360 @@ public class UnitManager : Singleton<UnitManager>
         }
         else if (type == ChessPieces.Queen)
         {
-            for (int count = 1, fail = 0; count < 8 && fail < 8; count++, fail = 0)
+            bool frontWall = false, backWall = false, leftWall = false, rightWall = false, frontLeftWall = false, backLeftWall = false, frontRightWall = false, backRightWall = false;
+            for (int count = 1, fail = 0, status = 0; count < 8 && fail < 8; count++, fail = 0)
             {
-                // chéo trên bên phải  
-                if (GridManager.boardTiles.ContainsKey(new Vector2(position.x + count, position.y + count)))
+                // trên
+                if (GridManager.boardTiles.ContainsKey(new Vector2(position.x, position.y + count)) && !frontWall)
                 {
-                    GridManager.boardTiles[new Vector2(position.x + count, position.y + count)].HighLight(color);
+                    status = GridManager.boardTiles[new Vector2(position.x, position.y + count)].IsWall(color);
+                    if (status == 1)
+                    {
+                        frontWall = true;
+                        GridManager.boardTiles[new Vector2(position.x, position.y + count)].HighLight(color);
+                    }
+                    else if (status == 2)
+                    {
+                        frontWall = true;
+                    }
+                    else
+                        GridManager.boardTiles[new Vector2(position.x, position.y + count)].HighLight(color);
                 }
                 else
                 {
+                    frontWall = true;
+                    fail++;
+                }
+                // xuống
+                if (GridManager.boardTiles.ContainsKey(new Vector2(position.x, position.y - count)) && !backWall)
+                {
+                    status = GridManager.boardTiles[new Vector2(position.x, position.y - count)].IsWall(color);
+                    if (status == 1)
+                    {
+                        backWall = true;
+                        GridManager.boardTiles[new Vector2(position.x, position.y - count)].HighLight(color);
+                    }
+                    else if (status == 2)
+                    {
+                        backWall = true;
+                    }
+                    else
+                        GridManager.boardTiles[new Vector2(position.x, position.y - count)].HighLight(color);
+                }
+                else
+                {
+                    backWall = true;
+                    fail++;
+                }
+                // bên trái  
+                if (GridManager.boardTiles.ContainsKey(new Vector2(position.x - count, position.y)) && !leftWall)
+                {
+                    status = GridManager.boardTiles[new Vector2(position.x - count, position.y)].IsWall(color);
+                    if (status == 1)
+                    {
+                        leftWall = true;
+                        GridManager.boardTiles[new Vector2(position.x - count, position.y)].HighLight(color);
+                    }
+                    else if (status == 2)
+                    {
+                        leftWall = true;
+                    }
+                    else
+                        GridManager.boardTiles[new Vector2(position.x - count, position.y)].HighLight(color);
+                }
+                else
+                {
+                    leftWall = true;
+                    fail++;
+                }
+                // bên phải
+                if (GridManager.boardTiles.ContainsKey(new Vector2(position.x + count, position.y)) && !rightWall)
+                {
+                    status = GridManager.boardTiles[new Vector2(position.x + count, position.y)].IsWall(color);
+                    if (status == 1)
+                    {
+                        rightWall = true;
+                        GridManager.boardTiles[new Vector2(position.x + count, position.y)].HighLight(color);
+                    }
+                    else if (status == 2)
+                    {
+                        rightWall = true;
+                    }
+                    else
+                        GridManager.boardTiles[new Vector2(position.x + count, position.y)].HighLight(color);
+                }
+                else
+                {
+                    rightWall = true;
+                    fail++;
+                }
+                // chéo trên bên phải  
+                if (GridManager.boardTiles.ContainsKey(new Vector2(position.x + count, position.y + count)) && !frontRightWall)
+                {
+                    status = GridManager.boardTiles[new Vector2(position.x + count, position.y + count)].IsWall(color);
+                    if (status == 1)
+                    {
+                        frontRightWall = true;
+                        GridManager.boardTiles[new Vector2(position.x + count, position.y + count)].HighLight(color);
+                    }
+                    else if (status == 2)
+                    {
+                        frontRightWall = true;
+                    }
+                    else
+                        GridManager.boardTiles[new Vector2(position.x + count, position.y + count)].HighLight(color);
+
+                }
+                else
+                {
+                    frontRightWall = true;
                     fail++;
                 }
                 // chéo xuống bên trái
-                if (GridManager.boardTiles.ContainsKey(new Vector2(position.x - count, position.y - count)))
+                if (GridManager.boardTiles.ContainsKey(new Vector2(position.x - count, position.y - count)) && !backLeftWall)
                 {
-                    GridManager.boardTiles[new Vector2(position.x - count, position.y - count)].HighLight(color);
+                    status = GridManager.boardTiles[new Vector2(position.x - count, position.y - count)].IsWall(color);
+                    if (status == 1)
+                    {
+                        backLeftWall = true;
+                        GridManager.boardTiles[new Vector2(position.x - count, position.y - count)].HighLight(color);
+                    }
+                    else if (status == 2)
+                    {
+                        backLeftWall = true;
+                    }
+                    else
+                        GridManager.boardTiles[new Vector2(position.x - count, position.y - count)].HighLight(color);
                 }
                 else
                 {
+                    backLeftWall = true;
                     fail++;
                 }
                 // chéo trên bên trái  
-                if (GridManager.boardTiles.ContainsKey(new Vector2(position.x - count, position.y + count)))
+                if (GridManager.boardTiles.ContainsKey(new Vector2(position.x - count, position.y + count)) && !frontLeftWall)
                 {
-                    GridManager.boardTiles[new Vector2(position.x - count, position.y + count)].HighLight(color);
+                    status = GridManager.boardTiles[new Vector2(position.x - count, position.y + count)].IsWall(color);
+                    if (status == 1)
+                    {
+                        frontLeftWall = true;
+                        GridManager.boardTiles[new Vector2(position.x - count, position.y + count)].HighLight(color);
+                    }
+                    else if (status == 2)
+                    {
+                        frontLeftWall = true;
+                    }
+                    else
+                        GridManager.boardTiles[new Vector2(position.x - count, position.y + count)].HighLight(color);
                 }
                 else
                 {
+                    frontLeftWall = true;
                     fail++;
                 }
                 // chéo xuống bên phải
-                if (GridManager.boardTiles.ContainsKey(new Vector2(position.x + count, position.y - count)))
+                if (GridManager.boardTiles.ContainsKey(new Vector2(position.x + count, position.y - count)) && !backRightWall)
                 {
-                    GridManager.boardTiles[new Vector2(position.x + count, position.y - count)].HighLight(color);
+                    status = GridManager.boardTiles[new Vector2(position.x + count, position.y - count)].IsWall(color);
+                    if (status == 1)
+                    {
+                        backRightWall = true;
+                        GridManager.boardTiles[new Vector2(position.x + count, position.y - count)].HighLight(color);
+                    }
+                    else if (status == 2)
+                    {
+                        backRightWall = true;
+                    }
+                    else
+                        GridManager.boardTiles[new Vector2(position.x + count, position.y - count)].HighLight(color);
                 }
                 else
                 {
-                    fail++;
-                }
-                // trái
-                if (GridManager.boardTiles.ContainsKey(new Vector2(position.x - count, position.y)))
-                {
-                    GridManager.boardTiles[new Vector2(position.x - count, position.y)].HighLight(color);
-                }
-                else
-                {
-                    fail++;
-                }
-                // phải 
-                if (GridManager.boardTiles.ContainsKey(new Vector2(position.x + count, position.y)))
-                {
-                    GridManager.boardTiles[new Vector2(position.x + count, position.y)].HighLight(color);
-                }
-                else
-                {
-                    fail++;
-                }
-                // trên
-                if (GridManager.boardTiles.ContainsKey(new Vector2(position.x, position.y + count)))
-                {
-                    GridManager.boardTiles[new Vector2(position.x, position.y + count)].HighLight(color);
-                }
-                else
-                {
-                    fail++;
-                }
-                // xuống 
-                if (GridManager.boardTiles.ContainsKey(new Vector2(position.x, position.y - count)))
-                {
-                    GridManager.boardTiles[new Vector2(position.x, position.y - count)].HighLight(color);
-                }
-                else
-                {
+                    backRightWall = true;
                     fail++;
                 }
             }
         }
         else if (type == ChessPieces.Rook)
         {
-            for (int count = 1, fail = 0; count < 8 && fail < 4; count++, fail = 0)
+            bool frontWall = false, backWall = false, leftWall = false, rightWall = false;
+            for (int count = 1, fail = 0, status = 0; count < 8 && fail < 4; count++, fail = 0)
             {
-                // trái
-                if (GridManager.boardTiles.ContainsKey(new Vector2(position.x - count, position.y)))
-                {
-                    GridManager.boardTiles[new Vector2(position.x - count, position.y)].HighLight(color);
-                }
-                else
-                {
-                    fail++;
-                }
-                // phải 
-                if (GridManager.boardTiles.ContainsKey(new Vector2(position.x + count, position.y)))
-                {
-                    GridManager.boardTiles[new Vector2(position.x + count, position.y)].HighLight(color);
-                }
-                else
-                {
-                    fail++;
-                }
                 // trên
-                if (GridManager.boardTiles.ContainsKey(new Vector2(position.x, position.y + count)))
+                if (GridManager.boardTiles.ContainsKey(new Vector2(position.x, position.y + count)) && !frontWall)
                 {
-                    GridManager.boardTiles[new Vector2(position.x, position.y + count)].HighLight(color);
+                    status = GridManager.boardTiles[new Vector2(position.x, position.y + count)].IsWall(color);
+                    if (status == 1)
+                    {
+                        frontWall = true;
+                        GridManager.boardTiles[new Vector2(position.x, position.y + count)].HighLight(color);
+                    }
+                    else if (status == 2)
+                    {
+                        frontWall = true;
+                    }
+                    else
+                        GridManager.boardTiles[new Vector2(position.x, position.y + count)].HighLight(color);
+
                 }
                 else
                 {
+                    frontWall = true;
                     fail++;
                 }
-                // xuống 
-                if (GridManager.boardTiles.ContainsKey(new Vector2(position.x, position.y - count)))
+                // xuống
+                if (GridManager.boardTiles.ContainsKey(new Vector2(position.x, position.y - count)) && !backWall)
                 {
-                    GridManager.boardTiles[new Vector2(position.x, position.y - count)].HighLight(color);
+                    status = GridManager.boardTiles[new Vector2(position.x, position.y - count)].IsWall(color);
+                    if (status == 1)
+                    {
+                        backWall = true;
+                        GridManager.boardTiles[new Vector2(position.x, position.y - count)].HighLight(color);
+                    }
+                    else if (status == 2)
+                    {
+                        backWall = true;
+                    }
+                    else
+                        GridManager.boardTiles[new Vector2(position.x, position.y - count)].HighLight(color);
                 }
                 else
                 {
+                    backWall = true;
+                    fail++;
+                }
+                // bên trái  
+                if (GridManager.boardTiles.ContainsKey(new Vector2(position.x - count, position.y)) && !leftWall)
+                {
+                    status = GridManager.boardTiles[new Vector2(position.x - count, position.y)].IsWall(color);
+                    if (status == 1)
+                    {
+                        leftWall = true;
+                        GridManager.boardTiles[new Vector2(position.x - count, position.y)].HighLight(color);
+                    }
+                    else if (status == 2)
+                    {
+                        leftWall = true;
+                    }
+                    else
+                        GridManager.boardTiles[new Vector2(position.x - count, position.y)].HighLight(color);
+                }
+                else
+                {
+                    leftWall = true;
+                    fail++;
+                }
+                // bên phải
+                if (GridManager.boardTiles.ContainsKey(new Vector2(position.x + count, position.y)) && !rightWall)
+                {
+                    status = GridManager.boardTiles[new Vector2(position.x + count, position.y)].IsWall(color);
+                    if (status == 1)
+                    {
+                        rightWall = true;
+                        GridManager.boardTiles[new Vector2(position.x + count, position.y)].HighLight(color);
+                    }
+                    else if (status == 2)
+                    {
+                        rightWall = true;
+                    }
+                    else
+                        GridManager.boardTiles[new Vector2(position.x + count, position.y)].HighLight(color);
+                }
+                else
+                {
+                    rightWall = true;
                     fail++;
                 }
             }
         }
         else if (type == ChessPieces.Bishop)
         {
-            for (int count = 1, fail = 0; count < 8 && fail < 4; count++, fail = 0)
+            bool frontLeftWall = false, backLeftWall = false, frontRightWall = false, backRightWall = false;
+            for (int count = 1, fail = 0, status = 0; count < 8 && fail < 4; count++, fail = 0)
             {
                 // chéo trên bên phải  
-                if (GridManager.boardTiles.ContainsKey(new Vector2(position.x + count, position.y + count)))
+                if (GridManager.boardTiles.ContainsKey(new Vector2(position.x + count, position.y + count)) && !frontRightWall)
                 {
-                    GridManager.boardTiles[new Vector2(position.x + count, position.y + count)].HighLight(color);
+                    status = GridManager.boardTiles[new Vector2(position.x + count, position.y + count)].IsWall(color);
+                    if (status == 1)
+                    {
+                        frontRightWall = true;
+                        GridManager.boardTiles[new Vector2(position.x + count, position.y + count)].HighLight(color);
+                    }
+                    else if (status == 2)
+                    {
+                        frontRightWall = true;
+                    }
+                    else
+                        GridManager.boardTiles[new Vector2(position.x + count, position.y + count)].HighLight(color);
+
                 }
                 else
                 {
+                    frontRightWall = true;
                     fail++;
                 }
                 // chéo xuống bên trái
-                if (GridManager.boardTiles.ContainsKey(new Vector2(position.x - count, position.y - count)))
+                if (GridManager.boardTiles.ContainsKey(new Vector2(position.x - count, position.y - count)) && !backLeftWall)
                 {
-                    GridManager.boardTiles[new Vector2(position.x - count, position.y - count)].HighLight(color);
+                    status = GridManager.boardTiles[new Vector2(position.x - count, position.y - count)].IsWall(color);
+                    if (status == 1)
+                    {
+                        backLeftWall = true;
+                        GridManager.boardTiles[new Vector2(position.x - count, position.y - count)].HighLight(color);
+                    }
+                    else if (status == 2)
+                    {
+                        backLeftWall = true;
+                    }
+                    else
+                        GridManager.boardTiles[new Vector2(position.x - count, position.y - count)].HighLight(color);
                 }
                 else
                 {
+                    backLeftWall = true;
                     fail++;
                 }
                 // chéo trên bên trái  
-                if (GridManager.boardTiles.ContainsKey(new Vector2(position.x - count, position.y + count)))
+                if (GridManager.boardTiles.ContainsKey(new Vector2(position.x - count, position.y + count)) && !frontLeftWall)
                 {
-                    GridManager.boardTiles[new Vector2(position.x - count, position.y + count)].HighLight(color);
+                    status = GridManager.boardTiles[new Vector2(position.x - count, position.y + count)].IsWall(color);
+                    if (status == 1)
+                    {
+                        frontLeftWall = true;
+                        GridManager.boardTiles[new Vector2(position.x - count, position.y + count)].HighLight(color);
+                    }
+                    else if (status == 2)
+                    {
+                        frontLeftWall = true;
+                    }
+                    else
+                        GridManager.boardTiles[new Vector2(position.x - count, position.y + count)].HighLight(color);
                 }
                 else
                 {
+                    frontLeftWall = true;
                     fail++;
                 }
                 // chéo xuống bên phải
-                if (GridManager.boardTiles.ContainsKey(new Vector2(position.x + count, position.y - count)))
+                if (GridManager.boardTiles.ContainsKey(new Vector2(position.x + count, position.y - count)) && !backRightWall)
                 {
-                    GridManager.boardTiles[new Vector2(position.x + count, position.y - count)].HighLight(color);
+                    status = GridManager.boardTiles[new Vector2(position.x + count, position.y - count)].IsWall(color);
+                    if (status == 1)
+                    {
+                        backRightWall = true;
+                        GridManager.boardTiles[new Vector2(position.x + count, position.y - count)].HighLight(color);
+                    }
+                    else if (status == 2)
+                    {
+                        backRightWall = true;
+                    }
+                    else
+                        GridManager.boardTiles[new Vector2(position.x + count, position.y - count)].HighLight(color);
                 }
                 else
                 {
+                    backRightWall = true;
                     fail++;
                 }
             }
