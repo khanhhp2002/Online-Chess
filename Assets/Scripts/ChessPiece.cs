@@ -13,7 +13,7 @@ public class ChessPiece : MonoBehaviour
     [SerializeField]
     private Sprite pieceSprite;
 
-    public bool isMove = false;
+    public bool IsMove = false;
     public void Selection()
     {
 
